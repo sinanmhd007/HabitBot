@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "148895932856",
+    "project_id": "habitbot-2556f",
+    "storage_bucket": "habitbot-2556f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148895932856:android:cce37e90798bcca5c46f4d",
+        "android_client_info": {
+          "package_name": "com.example.habitbot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYq98rpx-aMj_ktGeEbk_XTDUX0sWxxA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

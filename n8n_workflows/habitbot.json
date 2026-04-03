@@ -1,0 +1,109 @@
+{
+  "name": "habitbot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "habit-created",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "786d938d-de81-4ee9-bdff-a999b17d1cde",
+      "name": "Webhook",
+      "webhookId": "c7b7bb0f-fa3e-42fb-99ba-44cce1d029d3"
+    },
+    {
+      "parameters": {
+        "amount": "={{$json.delay/1000}}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "29d02240-20e9-46ac-8a06-1b77d5365cd2",
+      "name": "Wait",
+      "webhookId": "910ec838-857d-4534-900e-211c8348eb9b"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot<YOUR_BOT_TOKEN>/sendMessage?chat_id=<YOUR-CHAT-ID>&text=Reminder: Are you Ready for {{$json.title}}?💪",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        624,
+        0
+      ],
+      "id": "0fc87819-059a-4a1b-81e4-9404b4a09fa1",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.body;\n\nconst now = new Date();\n\nconst [hours, minutes] = data.time.split(\":\");\n\nlet target = new Date();\ntarget.setHours(parseInt(hours));\ntarget.setMinutes(parseInt(minutes));\ntarget.setSeconds(0);\n\n// if time already passed → tomorrow\nif (target <= now) {\n  target.setDate(target.getDate() + 1);\n}\n\nconst delay = target - now;\n\nreturn [\n  {\n    json: {\n      userId: data.userId,\n      habitId: data.habitId,\n      title: data.title,\n      phone: data.phone,\n      delay: delay\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "242b8152-5368-47a1-a1be-20da35ff51f1",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f927d0ad-32b1-4d06-8794-a28108d24e6d",
+  "meta": {
+    "instanceId": "209b9812489ae4e9e8f6ef57f7d146a9680b159cefcd4a065a0d26f65ca715a5"
+  },
+  "id": "6kbKYA9Uwd1e3hyX",
+  "tags": []
+}
