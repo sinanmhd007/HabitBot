@@ -14,6 +14,7 @@ abstract class AuthRemoteDataSource {
   });
   Future<void> logout();
   Future<UserModel?> checkAuthStatus();
+  Future<UserModel> updateUser(UserModel user);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -102,6 +103,12 @@ Future<UserModel> signup({
       return UserModel.fromFirebaseUser(currentUser);
     }
     return null;
+  }
+
+  @override
+  Future<UserModel> updateUser(UserModel user) async {
+    await firestore.collection('users').doc(user.id).update(user.toJson());
+    return user;
   }
     AuthException _handleFirebaseException(FirebaseAuthException e) {
     switch (e.code) {

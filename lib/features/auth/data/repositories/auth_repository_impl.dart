@@ -1,6 +1,7 @@
 import 'package:habitbot/core/error/exceptions.dart';
 import 'package:habitbot/core/error/failures.dart';
 import 'package:habitbot/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:habitbot/features/auth/data/models/user_model.dart';
 import 'package:habitbot/features/auth/domain/entities/user_entity.dart';
 import 'package:habitbot/features/auth/domain/repositories/auth_repository.dart';
 
@@ -63,6 +64,24 @@ class AuthRepositoryImpl implements AuthRepository {
         return (null, user);
       }
       return (null, null);
+    } catch (e) {
+      return (ServerFailure(e.toString()), null);
+    }
+  }
+
+  @override
+  Future<(Failure?, UserEntity?)> updateUser(UserEntity user) async {
+    try {
+      final userModel = UserModel(
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        telegramChatId: user.telegramChatId,
+        notificationPreferences: user.notificationPreferences,
+      );
+      final updatedUser = await remoteDataSource.updateUser(userModel);
+      return (null, updatedUser);
     } catch (e) {
       return (ServerFailure(e.toString()), null);
     }

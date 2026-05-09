@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:habitbot/features/auth/domain/entities/user_entity.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -37,3 +38,12 @@ class SignupEvent extends AuthEvent {
 }
 
 class LogoutEvent extends AuthEvent {}
+
+class UpdateUserEvent extends AuthEvent {
+  final UserEntity user;
+
+  const UpdateUserEvent(this.user);
+
+  @override
+  List<Object> get props => [user];
+}

@@ -7,6 +7,8 @@ class UserModel extends UserEntity {
     required super.name,
     required super.email,
     super.phoneNumber,
+    super.telegramChatId,
+    super.notificationPreferences,
   });
 
   factory UserModel.fromFirebaseUser(fb.User user) {
@@ -24,6 +26,13 @@ class UserModel extends UserEntity {
       name: json['name'],
       email: json['email'],
       phoneNumber: json['phoneNumber'] ?? '',
+      telegramChatId: json['telegramChatId'],
+      notificationPreferences: json['notificationPreferences'] ?? const {
+        'email': true,
+        'telegram': false,
+        'motivationStyle': 'gentle',
+        'silent': false,
+      },
     );
   }
 
@@ -33,6 +42,8 @@ class UserModel extends UserEntity {
       'name': name,
       'email': email,
       'phoneNumber': phoneNumber,
+      'telegramChatId': telegramChatId,
+      'notificationPreferences': notificationPreferences,
     };
   }
 }

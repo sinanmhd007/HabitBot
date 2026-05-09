@@ -22,6 +22,13 @@ class _CreateHabitPageWebState extends State<CreateHabitPageWeb> {
   final _descriptionController = TextEditingController();
   late TimeOfDay _selectedTime;
   late List<int> _selectedDays;
+  String _selectedCategory = 'General';
+  String _selectedDifficulty = 'medium';
+  String _selectedIntensity = 'normal';
+
+  final List<String> _categories = ['General', 'Health', 'Productivity', 'Learning', 'Fitness', 'Mindfulness'];
+  final List<String> _difficulties = ['easy', 'medium', 'hard'];
+  final List<String> _intensities = ['normal', 'high', 'escalating'];
 
   @override
   void initState() {
@@ -39,9 +46,15 @@ class _CreateHabitPageWebState extends State<CreateHabitPageWeb> {
         _selectedTime = const TimeOfDay(hour: 9, minute: 0);
       }
       _selectedDays = List.from(widget.habitToEdit!.days);
+      _selectedCategory = widget.habitToEdit!.category;
+      _selectedDifficulty = widget.habitToEdit!.goalDifficulty;
+      _selectedIntensity = widget.habitToEdit!.reminderIntensity;
     } else {
       _selectedTime = const TimeOfDay(hour: 9, minute: 0);
       _selectedDays = [1, 2, 3, 4, 5, 6, 7];
+      _selectedCategory = 'General';
+      _selectedDifficulty = 'medium';
+      _selectedIntensity = 'normal';
     }
   }
 
@@ -98,6 +111,9 @@ class _CreateHabitPageWebState extends State<CreateHabitPageWeb> {
           time:
               '${_selectedTime.hour.toString().padLeft(2, '0')}:${_selectedTime.minute.toString().padLeft(2, '0')}',
           days: _selectedDays,
+          category: _selectedCategory,
+          goalDifficulty: _selectedDifficulty,
+          reminderIntensity: _selectedIntensity,
         );
 
         if (widget.habitToEdit != null) {
@@ -203,6 +219,42 @@ class _CreateHabitPageWebState extends State<CreateHabitPageWeb> {
                                   hintText: 'Description (Optional)',
                                   prefixIcon: Icon(Icons.description_outlined),
                                 ),
+                              ),
+                              const SizedBox(height: 16),
+                              DropdownButtonFormField<String>(
+                                initialValue: _selectedCategory,
+                                decoration: const InputDecoration(
+                                  labelText: 'Category',
+                                  prefixIcon: Icon(Icons.category_outlined),
+                                ),
+                                items: _categories.map((cat) => DropdownMenuItem(value: cat, child: Text(cat))).toList(),
+                                onChanged: (val) {
+                                  if (val != null) setState(() => _selectedCategory = val);
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              DropdownButtonFormField<String>(
+                                initialValue: _selectedDifficulty,
+                                decoration: const InputDecoration(
+                                  labelText: 'Goal Difficulty',
+                                  prefixIcon: Icon(Icons.speed_outlined),
+                                ),
+                                items: _difficulties.map((diff) => DropdownMenuItem(value: diff, child: Text(diff.toUpperCase()))).toList(),
+                                onChanged: (val) {
+                                  if (val != null) setState(() => _selectedDifficulty = val);
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              DropdownButtonFormField<String>(
+                                initialValue: _selectedIntensity,
+                                decoration: const InputDecoration(
+                                  labelText: 'Reminder Intensity',
+                                  prefixIcon: Icon(Icons.notifications_active_outlined),
+                                ),
+                                items: _intensities.map((inty) => DropdownMenuItem(value: inty, child: Text(inty.toUpperCase()))).toList(),
+                                onChanged: (val) {
+                                  if (val != null) setState(() => _selectedIntensity = val);
+                                },
                               ),
                               const SizedBox(height: 32),
                               ListTile(

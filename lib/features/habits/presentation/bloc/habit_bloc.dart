@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:habitbot/features/auth/domain/repositories/auth_repository.dart';
+import 'package:habitbot/features/habits/domain/usecases/accountability_engine.dart';
 import 'package:habitbot/features/habits/domain/usecases/add_habit_usecase.dart';
 import 'package:habitbot/features/habits/domain/usecases/delete_habit_usecase.dart';
 import 'package:habitbot/features/habits/domain/usecases/get_habits_usecase.dart';
@@ -13,6 +15,8 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   final UpdateHabitUseCase updateHabit;
   final DeleteHabitUseCase deleteHabit;
   final ToggleHabitStatusUseCase toggleHabitStatus;
+  final AuthRepository authRepository;
+  final AccountabilityEngine accountabilityEngine;
 
   HabitBloc({
     required this.getHabits,
@@ -20,6 +24,8 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     required this.updateHabit,
     required this.deleteHabit,
     required this.toggleHabitStatus,
+    required this.authRepository,
+    required this.accountabilityEngine,
   }) : super(HabitInitial()) {
     on<LoadHabitsEvent>(_onLoadHabits);
     on<AddHabitEvent>(_onAddHabit);
@@ -35,6 +41,15 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       emit(HabitError(failure.message));
     } else if (habits != null) {
       emit(HabitLoaded(habits));
+      
+      try {
+        final (_, user) = await authRepository.checkAuthStatus();
+        if (user != null) {
+          await accountabilityEngine.run(user, habits);
+        }
+      } catch (e) {
+        // Log engine errors silently
+      }
     } else {
       emit(const HabitError('Unexpected error occurred'));
     }

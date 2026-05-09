@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:habitbot/core/theme/theme_bloc.dart';
 import 'package:habitbot/core/theme/theme_event.dart';
+import 'package:habitbot/features/profile/presentation/pages/telegram_connect_page.dart' as habitbot_telegram;
 
 class SettingsPageMobile extends StatelessWidget {
   const SettingsPageMobile({super.key});
@@ -56,6 +57,33 @@ class SettingsPageMobile extends StatelessWidget {
                   ),
                 );
               },
+            ),
+          ),
+          const SizedBox(height: 30),
+          Text(
+            'Notifications & Accountability',
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.primaryColor,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.telegram, color: Colors.blue),
+                  title: const Text('Connect Telegram'),
+                  subtitle: const Text('Receive smart reminders'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const habitbot_telegram.TelegramConnectPage()),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ],

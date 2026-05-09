@@ -11,6 +11,11 @@ class HabitEntity extends Equatable {
   final int bestStreak;
   final Map<String, bool> completionHistory;
   final bool isCompletedToday;
+  final String category;
+  final String goalDifficulty; // 'easy', 'medium', 'hard'
+  final String reminderIntensity; // 'normal', 'high', 'escalating'
+  final int missedCount;
+  final double weeklyConsistencyScore;
 
   const HabitEntity({
     required this.id,
@@ -23,6 +28,11 @@ class HabitEntity extends Equatable {
     this.bestStreak = 0,
     this.completionHistory = const {},
     this.isCompletedToday = false,
+    this.category = 'General',
+    this.goalDifficulty = 'medium',
+    this.reminderIntensity = 'normal',
+    this.missedCount = 0,
+    this.weeklyConsistencyScore = 0.0,
   });
 
   @override
@@ -37,5 +47,10 @@ class HabitEntity extends Equatable {
     bestStreak,
     completionHistory,
     isCompletedToday,
+    category,
+    goalDifficulty,
+    reminderIntensity,
+    missedCount,
+    weeklyConsistencyScore,
   ];
 }

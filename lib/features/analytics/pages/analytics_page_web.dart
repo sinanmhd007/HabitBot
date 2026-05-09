@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:habitbot/features/analytics/widgets/build_glass_card.dart';
+import 'package:habitbot/features/habits/domain/entities/habit_entity.dart';
 import 'package:habitbot/features/habits/presentation/bloc/habit_bloc.dart';
 import 'package:habitbot/features/habits/presentation/bloc/habit_state.dart';
 import 'package:habitbot/features/analytics/widgets/habit_heatmap.dart';
@@ -62,6 +63,10 @@ class AnalyticsPageWeb extends StatelessWidget {
                   if (habit.isCompletedToday) completedToday++;
                 }
                 int missedToday = total - completedToday;
+                
+                double avgConsistency = habits.isEmpty ? 0.0 : habits.map((h) => h.weeklyConsistencyScore).reduce((a, b) => a + b) / habits.length;
+                HabitEntity? bestHabit = habits.isEmpty ? null : habits.reduce((a, b) => a.currentStreak > b.currentStreak ? a : b);
+                HabitEntity? worstHabit = habits.isEmpty ? null : habits.reduce((a, b) => a.missedCount > b.missedCount ? a : b);
 
                 return SingleChildScrollView(
                   padding: const EdgeInsets.only(
@@ -284,6 +289,54 @@ class AnalyticsPageWeb extends StatelessWidget {
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 20),
+                      BuildGlassCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Text(
+                              'Smart AI Insights',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Column(
+                                  children: [
+                                    Text('${(avgConsistency * 100).toStringAsFixed(1)}%', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: theme.primaryColor)),
+                                    const Text('Avg Consistency', style: TextStyle(color: Colors.grey)),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text('${habits.fold(0, (sum, h) => sum + h.missedCount)}', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: theme.colorScheme.error)),
+                                    const Text('Total Misses', style: TextStyle(color: Colors.grey)),
+                                  ],
+                                ),
+                                if (bestHabit != null)
+                                  Column(
+                                    children: [
+                                      Text('${bestHabit.currentStreak}', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.amber)),
+                                      const Text('Best Streak', style: TextStyle(color: Colors.grey)),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+                            if (worstHabit != null && worstHabit.missedCount > 0)
+                               ListTile(
+                                 leading: Icon(Icons.warning_amber, color: theme.colorScheme.error),
+                                 title: Text('Needs Attention: ${worstHabit.title}'),
+                                 subtitle: Text('Missed ${worstHabit.missedCount} times. Consider lowering the goal.'),
+                                 contentPadding: EdgeInsets.zero,
+                               ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 20),
                       BuildGlassCard(child: HabitHeatmap(habits: habits)),

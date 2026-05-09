@@ -12,6 +12,11 @@ class HabitModel extends HabitEntity {
     super.bestStreak,
     super.completionHistory,
     super.isCompletedToday,
+    super.category,
+    super.goalDifficulty,
+    super.reminderIntensity,
+    super.missedCount,
+    super.weeklyConsistencyScore,
   });
 
   factory HabitModel.fromJson(Map<String, dynamic> json, String id) {
@@ -26,6 +31,11 @@ class HabitModel extends HabitEntity {
       bestStreak: json['bestStreak'] ?? 0,
       completionHistory: Map<String, bool>.from(json['completionHistory'] ?? {}),
       isCompletedToday: json['isCompletedToday'] ?? false,
+      category: json['category'] ?? 'General',
+      goalDifficulty: json['goalDifficulty'] ?? 'medium',
+      reminderIntensity: json['reminderIntensity'] ?? 'normal',
+      missedCount: json['missedCount'] ?? 0,
+      weeklyConsistencyScore: (json['weeklyConsistencyScore'] ?? 0.0).toDouble(),
     );
   }
 
@@ -40,6 +50,11 @@ class HabitModel extends HabitEntity {
       'bestStreak': bestStreak,
       'completionHistory': completionHistory,
       'isCompletedToday': isCompletedToday,
+      'category': category,
+      'goalDifficulty': goalDifficulty,
+      'reminderIntensity': reminderIntensity,
+      'missedCount': missedCount,
+      'weeklyConsistencyScore': weeklyConsistencyScore,
     };
   }
 
