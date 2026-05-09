@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:habitbot/core/theme/theme_bloc.dart';
 import 'package:habitbot/core/network/dio_client.dart';
 import 'package:habitbot/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:habitbot/features/auth/data/repositories/auth_repository_impl.dart';
@@ -26,8 +28,9 @@ import 'package:habitbot/features/habits/presentation/bloc/habit_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
-
-
+  // Initialize SharedPreferences
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
 
   // -- Features: Auth --
   sl.registerFactory(() => AuthBloc(loginUseCase: sl(), signupUseCase: sl(), logoutUseCase: sl(), checkAuthStatusUseCase: sl()));
@@ -50,6 +53,7 @@ Future<void> init() async {
 
   // -- Core --
   sl.registerLazySingleton(() => DioClient(dio: sl()));
+  sl.registerFactory(() => ThemeBloc(sharedPreferences: sl()));
   
   // -- External --
   sl.registerLazySingleton(() => Dio());
